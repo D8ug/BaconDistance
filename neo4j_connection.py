@@ -1,5 +1,6 @@
+from typing import List
 from neo4j import GraphDatabase
-from consts import DB_URI, DB_USERNAME, DB_PASSWORD_PATH
+from consts import DB_URI, DB_USERNAME, DB_PASSWORD_PATH, Neo4jQuery
 from db_connection import DBConnection
 
 
@@ -11,6 +12,8 @@ class Neo4jConnection(DBConnection):
         self.password = ''
         with open(DB_PASSWORD_PATH, 'r') as f:
             self.password = f.readline().strip()
+        self.driver = None
+        self.session = None
         self.connect()
 
     def connect(self):
@@ -20,11 +23,72 @@ class Neo4jConnection(DBConnection):
         """
         with open(DB_PASSWORD_PATH, 'r') as f:
             password = f.readline().strip()
-        self.connection.driver(DB_URI, auth=(DB_USERNAME, password))
+        self.driver = self.connection.driver(DB_URI, auth=(DB_USERNAME, password))
+        self.session = self.driver.session()
+
+    def _add_movie(self, movie):
+        """
+        adds a movie id to the neo4j database if doesn't exist already
+        :param movie: the movie id
+        :return:
+        """
+        print(Neo4jQuery.ADD_MOVIE_FORMAT.value.format(movie_id=movie))
+
+    def _add_movie_relation(self, actor_id: str, movie_id: str):
+        """
+        adds an actor-played_in->movie relation to the db
+        :param actor_id:
+        :param movie_id:
+        :return:
+        """
+        self._add_movie(movie_id)
+        print(Neo4jQuery.ADD_ACTOR_ROLE_FORMAT.value.format(actor_id=actor_id, movie_id=movie_id))
+
+
+    def _add_actor(self, actor_id: str, actor_name: str, born_year: int, death_year: int):
+        """
+        adds an actor to the neo4j database
+        :param actor_id: the actor id from the tsv file
+        :param actor_name: the actor's name
+        :param born_year: the actor's born year
+        :param death_year: the actor's death year
+        :return:
+        """
+        print(Neo4jQuery.ADD_ACTOR_FORMAT.value.format(actor_id=actor_id,
+                                                 actor_name=actor_name,
+                                                 born_year=born_year,
+                                                 death_year=death_year))
+
+    def _add_tsv_actor_row(self, actor_id: str, actor_name: str, born_year: int, death_year: int, role_ids: List[str]):
+        """
+        adds a relation to the neo4j database for an actor
+        formatted as a (:Actor)-[:ACTED_IN]->(:Movie) relation
+        :param actor_id:
+        :param actor_name:
+        :param role_ids:
+        :return:
+        """
+        self._add_actor(actor_id, actor_name, born_year, death_year)
+        for movie in role_ids:
+            self._add_movie_relation(actor_id, movie)
 
     def close(self):
         """
         close the connection to the neo4j database
         :return:
         """
-        self.connection = None #TODO: actually close the connection (tho i dont see a reason to close this connection)
+        self.connection = None  # TODO: actually close the connection (tho i dont see a reason to close this connection)
+
+    def parse_and_add_tsv_row_to_db(self, header, row):
+        """
+        parses the tsv row and adds it to the neo4j database
+        # TODO: parse based on the header! right now we are using magics for optimisition
+        :param header: the tsv header (is not currently used)
+        :param row: the tsv row that will be added to the neo4j database
+        :return:
+        """
+        self._add_tsv_actor_row(actor_id=row[0],
+                                actor_name=row[1],
+                                born_year=row[2],
+                                death_year=row[3],
+                                role_ids=row[-1].split(","))
