@@ -87,6 +87,9 @@ class Neo4jConnection(DBConnection):
         :param row: the tsv row that will be added to the neo4j database
         :return:
         """
+        if (row[-1] == "\\N"):
+            print("skipping {actor_id} as they've never played any role".format(actor_id=row[0]))
+            return
         self._add_tsv_actor_row(actor_id=row[0],
                                 actor_name=row[1],
                                 born_year=row[2],
