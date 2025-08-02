@@ -21,10 +21,14 @@ class Neo4jConnection(DBConnection):
         connects to the neo4j database
         :return:
         """
-        with open(DB_PASSWORD_PATH, 'r') as f:
-            password = f.readline().strip()
-        self.driver = self.connection.driver(DB_URI, auth=(DB_USERNAME, password))
+        self.driver = self.connection.driver(self.uri, auth=(self.username, self.password))
         self.session = self.driver.session()
+        try:
+            self.session.run("RETURN 1")
+            print("Connected to neo4j successfully")
+        except:
+            assert("Connection to Neo4j DB failed")
+
 
     def _add_movie(self, movie):
         """
@@ -32,7 +36,7 @@ class Neo4jConnection(DBConnection):
         :param movie: the movie id
         :return:
         """
-        print(Neo4jQuery.ADD_MOVIE_FORMAT.value.format(movie_id=movie))
+        self.session.run(Neo4jQuery.ADD_MOVIE_FORMAT.value.format(movie_id=movie))
 
     def _add_movie_relation(self, actor_id: str, movie_id: str):
         """
@@ -42,7 +46,7 @@ class Neo4jConnection(DBConnection):
         :return:
         """
         self._add_movie(movie_id)
-        print(Neo4jQuery.ADD_ACTOR_ROLE_FORMAT.value.format(actor_id=actor_id, movie_id=movie_id))
+        self.session.run(Neo4jQuery.ADD_ACTOR_ROLE_FORMAT.value.format(actor_id=actor_id, movie_id=movie_id))
 
 
     def _add_actor(self, actor_id: str, actor_name: str, born_year: int, death_year: int):
@@ -54,7 +58,7 @@ class Neo4jConnection(DBConnection):
         :param death_year: the actor's death year
         :return:
         """
-        print(Neo4jQuery.ADD_ACTOR_FORMAT.value.format(actor_id=actor_id,
+        self.session.run(Neo4jQuery.ADD_ACTOR_FORMAT.value.format(actor_id=actor_id,
                                                  actor_name=actor_name,
                                                  born_year=born_year,
                                                  death_year=death_year))

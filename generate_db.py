@@ -22,7 +22,6 @@ def generate_db_from_tsv(imdb_tsv_file_path: str, neo4j_db_connection:Neo4jConne
     :param neo4j_db_connection: neo4j database connection
     :return:
     """
-
     with open(imdb_tsv_file_path, "r") as imdb_tsv_file:
         imdb_tsv_reader = csv.reader(imdb_tsv_file, delimiter="\t")
         header = next(imdb_tsv_reader)
