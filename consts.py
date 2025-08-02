@@ -4,7 +4,7 @@ from enum import Enum
 DB_URI = "neo4j://127.0.0.1:7687"
 DB_USERNAME = "neo4j"
 DB_PASSWORD_PATH = r"C:\password.txt" #TODO: Find a better way to do this, for now i dont want this to be in the repo
-IMDB_TSV_FILE_NAME = r"name.basics.tsv"
+IMDB_TSV_FILE_NAME = r"C:\Users\Segel\Downloads\name.basics.tsv"
 
 class Neo4jQuery(Enum):
     ADD_ACTOR_FORMAT = """
@@ -32,3 +32,16 @@ UNWIND row.movies AS movie
 MERGE (m:Movie {id: movie.id})
 MERGE (a)-[:ACTED_IN]->(m)
     """
+    CALCULATE_BACON_DISTANCE_FORMAT = """
+MATCH (start:Actor {{name: 'Kevin Bacon'}}), (end:Actor {{name: '{target}'}})
+CALL gds.shortestPath.dijkstra.stream(
+'actorMovieGraph',
+{{
+sourceNode: start,
+targetNode: end
+}}
+)
+YIELD path, totalCost
+RETURN
+[node IN nodes(path) WHERE 'Actor' IN labels(node) | node.name] AS Path,
+totalCost / 2 AS hops"""
