@@ -83,6 +83,9 @@ class Neo4jConnection(DBConnection):
         """
         self.connection = None  # TODO: actually close the connection (tho i dont see a reason to close this connection)
 
+    def add_pandas_parsed_tsv(self, pandas_data):
+        self.session.run(Neo4jQuery.ADD_TSV_AS_BUTCH_QUERY.value, data=pandas_data)
+
     def parse_and_add_tsv_row_to_db(self, header, row):
         """
         parses the tsv row and adds it to the neo4j database
