@@ -27,8 +27,8 @@ def parse_tsv_to_pandas(imdb_tsv_file_path:str, batch_size:int=200) -> Generator
     pandas_dataframe = pandas.read_csv(imdb_tsv_file_path, sep="\t")
     parsed_data = []
     for i, row in pandas_dataframe.iterrows():
-        if i % batch_size == 0:
-            print("parsing row {}".format(i))
+        if len(parsed_data) == batch_size:
+            print("done parsing row {}".format(i))
             yield parsed_data
             parsed_data = []
         if row['knownForTitles'] == "\\n":
