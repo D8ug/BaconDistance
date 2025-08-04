@@ -11,8 +11,13 @@ function App() {
     }
 
     const handleOnSearchClick = () => {
-        // TODO: search
-        setBaconDistance(Infinity)
+        fetch(`/api/get_bacon_distance?actor=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                setBaconDistance(data.result);
+            })
+            .catch(err => console.error(err));
+
     }
 
   return (

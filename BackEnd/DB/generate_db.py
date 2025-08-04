@@ -2,7 +2,7 @@ from typing import Any, Generator
 
 import pandas
 
-from BackEnd.DB.neo4j_connection import Neo4jConnection
+from DB.neo4j_connection import Neo4jConnection
 
 
 def parse_tsv_to_pandas(imdb_tsv_file_path:str, batch_size:int=200) -> Generator[list[Any], Any, None]:

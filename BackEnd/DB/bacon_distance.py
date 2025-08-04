@@ -1,5 +1,7 @@
-from BackEnd.DB.consts import Neo4jQuery
-from BackEnd.DB.neo4j_connection import Neo4jConnection
+import math
+
+from DB.consts import Neo4jQuery
+from DB.neo4j_connection import Neo4jConnection
 
 
 def bacon_distance(neo4j_db_connection: Neo4jConnection, actor_name:str) -> float:
@@ -12,4 +14,6 @@ def bacon_distance(neo4j_db_connection: Neo4jConnection, actor_name:str) -> floa
     """
     result = neo4j_db_connection.session.run(Neo4jQuery.CALCULATE_BACON_DISTANCE_FORMAT.value.format(target=actor_name))
     result = result.single()
-    return result["hops"]
+    if not result:
+        return math.inf
+    return result.get("hops", math.inf)

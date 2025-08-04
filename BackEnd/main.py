@@ -1,6 +1,6 @@
-from BackEnd.DB import bacon_distance, generate_db
-from BackEnd.DB.consts import IMDB_TSV_FILE_NAME
-from BackEnd.DB.neo4j_connection import Neo4jConnection
+from DB import bacon_distance, generate_db
+from DB.consts import IMDB_TSV_FILE_NAME
+from DB.neo4j_connection import Neo4jConnection
 
 
 def milestone_0(neo4j_db):
