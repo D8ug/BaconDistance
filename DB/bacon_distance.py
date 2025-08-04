@@ -1,5 +1,5 @@
-from consts import Neo4jQuery
-from neo4j_connection import Neo4jConnection
+from DB.consts import Neo4jQuery
+from DB.neo4j_connection import Neo4jConnection
 
 
 def bacon_distance(neo4j_db_connection: Neo4jConnection, actor_name:str) -> float:

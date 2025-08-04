@@ -1,7 +1,7 @@
 from typing import List
 from neo4j import GraphDatabase
-from consts import DB_URI, DB_USERNAME, DB_PASSWORD_PATH, Neo4jQuery
-from db_connection import DBConnection
+from DB.consts import DB_URI, DB_USERNAME, DB_PASSWORD_PATH, Neo4jQuery
+from DB.db_connection import DBConnection
 
 
 class Neo4jConnection(DBConnection):
