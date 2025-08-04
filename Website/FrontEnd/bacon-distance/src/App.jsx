@@ -3,30 +3,50 @@ import bacon from './assets/images/bacon-pixelart.png'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [bacon_distance, setBaconDistance] = useState(Infinity)
+    const [query, setQuery] = useState('')
+    const handleActorSearchChange = (event) => {
+        setQuery(event.target.value)
+        console.log('Search query:', event.target.value) // TODO: show possible actors
+    }
+
+    const handleOnSearchClick = () => {
+        // TODO: search
+        setBaconDistance(Infinity)
+    }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={bacon} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={bacon} className="logo react" alt="React logo" />
+      <div className="top-left">
+        <a>
+          <img src={bacon} className="logo" alt="Vite logo" align={'left'}/>
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <div className="top-right">
+          <a href="https://react.dev" target="_blank">
+              <img src={bacon} className="logo react" alt="React logo" />
+          </a>
+      </div>
+        <h1>Bacon Distance Calculator!</h1>
+      <div>
+          <input
+              type="text"
+              placeholder="Tom Hanks"
+              value={query}
+              onChange={handleActorSearchChange}
+          />
+      </div>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={handleOnSearchClick}>
+          Bacon Distance: {bacon_distance}
         </button>
         <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
+          What's the longest distance you can find?!
         </p>
       </div>
-      <p className="read-the-docs" >
-        Click on the Vite and React logos to learn more
-      </p>
+      <a href={"https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon"} className="read-the-docs" >
+        Click here to learn more about the Bacon Distance!
+      </a>
     </>
   )
 }
