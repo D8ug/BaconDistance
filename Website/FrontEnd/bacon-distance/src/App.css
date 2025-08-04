@@ -4,6 +4,13 @@
   padding: 2rem;
   text-align: center;
 }
+
+@font-face {
+  font-family: "MinecraftFont"; /* Choose a name for your font */
+  src: local("MinecraftFont"), url("./assets/fonts/Minecraft.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
 .logo {
   height: 6em;
   padding: 1.5em;
