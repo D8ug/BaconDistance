@@ -1,7 +1,6 @@
-from typing import Dict, List, Any, Generator
+from typing import Any, Generator
 
 import pandas
-import csv
 
 from neo4j_connection import Neo4jConnection
 
