@@ -2,22 +2,20 @@
 Calculate your favorite actor's Bacon Distance TODAY! using this awesome project!
 
 ## Installation
-### DB Setup
-* Create a Neo4j database
-* Install the GDS plugin
-
-### Flask
-In your venv, install flask using
+* git clone this repo locally
+* install docker
+* run the docker-comose:
 ```cmd
-pip install flask
+docker-compose up -d
 ```
 
-### React
-* Install Node.js
+## About
+The site will be loaded to localhost:80/
+
+It is using Neo4j DB which can be access via localhost:7474/
+
+It is used with the flask backend in localhost:5000/
 
 
-## How to run
-* Start your DB
-* Run main.py to load your tsv file
-* Run app.py in the backend folder to run the flask backend
-* Start the react website in the frontend folder
+## Bigger DB?
+You are more than welcomed to change the name.basics.tsv file to the updated tsv file from the public imdb files
