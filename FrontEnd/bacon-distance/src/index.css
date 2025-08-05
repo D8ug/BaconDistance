@@ -24,7 +24,7 @@ a:hover {
 
 body {
   font-family: "MinecraftFont", sans-serif;
-  cursor: url('gta-v-cursor-png.png'), pointer;
+  cursor: url("/gta-v-cursor-png.png"), pointer;
   margin: 0;
   display: flex;
   place-items: center;

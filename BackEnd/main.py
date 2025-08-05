@@ -17,8 +17,8 @@ def milestone_1(neo4j_db):
 
 def main():
     neo4j_db = Neo4jConnection()
-    milestone_1(neo4j_db)
     milestone_0(neo4j_db)
+    milestone_1(neo4j_db)
 
 
 if __name__ == "__main__":

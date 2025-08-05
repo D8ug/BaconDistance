@@ -4,10 +4,16 @@ from enum import Enum
 DB_URI = "neo4j://127.0.0.1:7687"
 DB_USERNAME = "neo4j"
 DB_PASSWORD_PATH = r"C:\password.txt" #TODO: Find a better way to do this, for now i dont want this to be in the repo
-IMDB_TSV_FILE_NAME = r"name.basics.tsv"
+IMDB_TSV_FILE_NAME = r"./DB/name.basics.tsv"
 
 class Neo4jQuery(Enum):
     DELETE_GRAPH_QUERY = "CALL gds.graph.drop('actorMovieGraph', false)"
+    INIT_ACTOR_NODES_QUERY = "CREATE CONSTRAINT IF NOT EXISTS FOR (a:Actor) REQUIRE a.id IS UNIQUE"
+    INIT_MOVIE_NODES_QUERY = "CREATE CONSTRAINT IF NOT EXISTS FOR (m:Movie) REQUIRE m.id IS UNIQUE"
+    CREATE_EMPTY_RELATION_QUERY = """
+MERGE (a:Actor {id: 'test_actor'})
+MERGE (m:Movie {id: 'test_movie'})
+MERGE (a)-[:ACTED_IN]->(m)"""
     INIT_GRAPH_QUERY = """
 CALL gds.graph.project(
 'actorMovieGraph',
@@ -33,7 +39,7 @@ MERGE (a:Movie {{id: "{movie_id}"}})
 MATCH(a:Actor {{id: "{actor_id}"}}), (m:Movie {{id: "{movie_id}"}})
 MERGE (a)-[:ACTED_IN]->(m)
     """
-    ADD_TSV_AS_BUTCH_QUERY = """
+    ADD_TSV_AS_BATCH_QUERY = """
 UNWIND $data AS row
 MERGE (a:Actor {id: row.actor_id})
 SET a.name = row.actor_name,

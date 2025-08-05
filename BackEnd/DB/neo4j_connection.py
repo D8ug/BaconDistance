@@ -1,20 +1,19 @@
+import os
 from typing import List
 
 from neo4j import GraphDatabase
 from neo4j.exceptions import ClientError
 
-from DB.consts import DB_URI, DB_USERNAME, DB_PASSWORD_PATH, Neo4jQuery
+from DB.consts import Neo4jQuery
 from DB.db_connection import DBConnection
 
 
 class Neo4jConnection(DBConnection):
     def __init__(self):
         self.connection = GraphDatabase()
-        self.uri = DB_URI
-        self.username = DB_USERNAME
-        self.password = ''
-        with open(DB_PASSWORD_PATH, 'r') as f:
-            self.password = f.readline().strip()
+        self.uri = os.getenv("NEO4J_URI", "bolt://neo4j:7687")
+        self.username = os.getenv("NEO4J_USER", "neo4j")
+        self.password = os.getenv("NEO4J_PASSWORD", "")
         self.driver = None
         self.session = None
         self.connect()
@@ -40,6 +39,12 @@ class Neo4jConnection(DBConnection):
         for some reason, using the same graph each time breaks so i will delete it before starting it
         :return:
         """
+        self.session.run(Neo4jQuery.INIT_ACTOR_NODES_QUERY.value)
+        self.session.run(Neo4jQuery.INIT_MOVIE_NODES_QUERY.value)
+        # This is probably the worst code i've ever written, but I need to init an ACTED_IN connection
+        # for the batches to work
+        self.session.run(Neo4jQuery.CREATE_EMPTY_RELATION_QUERY.value)
+
         self.session.run(Neo4jQuery.DELETE_GRAPH_QUERY.value)
         try:
             self.session.run(Neo4jQuery.INIT_GRAPH_QUERY.value)
@@ -100,7 +105,7 @@ class Neo4jConnection(DBConnection):
         self.connection = None  # TODO: actually close the connection (tho i dont see a reason to close this connection)
 
     def add_pandas_parsed_tsv(self, pandas_data):
-        self.session.run(Neo4jQuery.ADD_TSV_AS_BUTCH_QUERY.value, data=pandas_data)
+        self.session.run(Neo4jQuery.ADD_TSV_AS_BATCH_QUERY.value, data=pandas_data)
 
     def parse_and_add_tsv_row_to_db(self, header, row):
         """
