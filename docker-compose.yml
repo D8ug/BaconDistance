@@ -24,10 +24,14 @@ services:
       - resolve_database
     ports:
       - "5000:5000"
+    restart: "on-failure"
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: "http://localhost:5000"
     ports:
-      - "80:80"
+        - "80:80"
 
 volumes:
   db_data:

@@ -2,6 +2,9 @@ import { useState } from 'react'
 import bacon from './assets/images/bacon-pixelart.png'
 import './App.css'
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+
 function App() {
     const [bacon_distance, setBaconDistance] = useState(Infinity)
     const [query, setQuery] = useState('')
@@ -11,7 +14,7 @@ function App() {
     }
 
     const handleOnSearchClick = () => {
-        fetch(`/api/get_bacon_distance?actor=${encodeURIComponent(query)}`)
+        fetch(`${API_URL}/api/get_bacon_distance?actor=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
                 setBaconDistance(data.result);
