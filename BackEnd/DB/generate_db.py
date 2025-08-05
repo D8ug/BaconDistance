@@ -41,3 +41,4 @@ def generate_db_from_tsv(imdb_tsv_file_path: str, neo4j_db_connection:Neo4jConne
     """
     for data in parse_tsv_to_pandas(imdb_tsv_file_path):
         neo4j_db_connection.add_pandas_parsed_tsv(data)
+    neo4j_db_connection.init_graph()

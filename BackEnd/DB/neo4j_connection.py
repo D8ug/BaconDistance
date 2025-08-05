@@ -44,7 +44,6 @@ class Neo4jConnection(DBConnection):
         # This is probably the worst code i've ever written, but I need to init an ACTED_IN connection
         # for the batches to work
         self.session.run(Neo4jQuery.CREATE_EMPTY_RELATION_QUERY.value)
-
         self.session.run(Neo4jQuery.DELETE_GRAPH_QUERY.value)
         try:
             self.session.run(Neo4jQuery.INIT_GRAPH_QUERY.value)
