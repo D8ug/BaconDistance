@@ -32,11 +32,17 @@ SET a.name = "{actor_name}"
 SET a.born_year = "{born_year}"
 SET a.death_year = "{death_year}"
     """
+    ADD_ACTOR_BY_NAME_FORMAT = """
+OPTIONAL MATCH (a:Actor {{name: "{actor_name}"}})
+WITH a
+WHERE a IS NULL
+CREATE (a:Actor {{name: "{actor_name}", id: "{actor_name}"}})
+"""
     ADD_MOVIE_FORMAT = """
 MERGE (a:Movie {{id: "{movie_id}"}})
     """
     ADD_ACTOR_ROLE_FORMAT = """
-MATCH(a:Actor {{id: "{actor_id}"}}), (m:Movie {{id: "{movie_id}"}})
+MATCH(a:Actor {{name: "{actor_name}"}}), (m:Movie {{id: "{movie_id}"}})
 MERGE (a)-[:ACTED_IN]->(m)
     """
     ADD_TSV_AS_BATCH_QUERY = """

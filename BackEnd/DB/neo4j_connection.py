@@ -32,25 +32,34 @@ class Neo4jConnection(DBConnection):
         except:
             assert("Connection to Neo4j DB failed")
 
-    def init_graph(self):
+    def refresh_graph(self):
         """
         For running the spf algorithm on the neo4j database we need to init a movie/actor graph on the db
-        This function queries the db to do so so the algorithm will then work.
+        This function queries the db to do so, so the algorithm will then work.
         for some reason, using the same graph each time breaks so i will delete it before starting it
         :return:
         """
-        self.session.run(Neo4jQuery.INIT_ACTOR_NODES_QUERY.value)
-        self.session.run(Neo4jQuery.INIT_MOVIE_NODES_QUERY.value)
-        # This is probably the worst code i've ever written, but I need to init an ACTED_IN connection
-        # for the batches to work
-        self.session.run(Neo4jQuery.CREATE_EMPTY_RELATION_QUERY.value)
         self.session.run(Neo4jQuery.DELETE_GRAPH_QUERY.value)
         try:
             self.session.run(Neo4jQuery.INIT_GRAPH_QUERY.value)
         except ClientError:
             print("Graph already exists")
 
-    def _add_movie(self, movie):
+    def init_graph(self):
+        """
+        You must have actor and movie nodes and a relation of acted_in for everything to work so we are
+        creating a "fake" actor and movie and relation between them.
+        This is really bad practice but I am yet to find a better way to do this
+        # TODO: find a better way to do this
+        :return:
+        """
+        self.session.run(Neo4jQuery.INIT_ACTOR_NODES_QUERY.value)
+        self.session.run(Neo4jQuery.INIT_MOVIE_NODES_QUERY.value)
+        self.session.run(Neo4jQuery.CREATE_EMPTY_RELATION_QUERY.value)
+        self.refresh_graph()
+
+
+    def add_movie(self, movie):
         """
         adds a movie id to the neo4j database if doesn't exist already
         :param movie: the movie id
@@ -58,18 +67,27 @@ class Neo4jConnection(DBConnection):
         """
         self.session.run(Neo4jQuery.ADD_MOVIE_FORMAT.value.format(movie_id=movie))
 
-    def _add_movie_relation(self, actor_id: str, movie_id: str):
+    def add_movie_relation(self, actor_name: str, movie_id: str):
         """
         adds an actor-played_in->movie relation to the db
-        :param actor_id:
+        :param actor_name:
         :param movie_id:
         :return:
         """
-        self._add_movie(movie_id)
-        self.session.run(Neo4jQuery.ADD_ACTOR_ROLE_FORMAT.value.format(actor_id=actor_id, movie_id=movie_id))
+        self.session.run(Neo4jQuery.ADD_ACTOR_ROLE_FORMAT.value.format(actor_name=actor_name, movie_id=movie_id))
 
+    def add_actor_by_name(self, actor_name):
+        """
+        create an actor node with limited info only based on name
+        is used for the rabbitmq db queue as no id is provided
+        - checks if the name exists, if so does nothing
+        - else creates the actor with an id that is equal to the name of the actor
+        :param actor_name:
+        :return:
+        """
+        self.session.run(Neo4jQuery.ADD_ACTOR_BY_NAME_FORMAT.value.format(actor_name=actor_name))
 
-    def _add_actor(self, actor_id: str, actor_name: str, born_year: int, death_year: int):
+    def add_actor(self, actor_id: str, actor_name: str, born_year: int, death_year: int):
         """
         adds an actor to the neo4j database
         :param actor_id: the actor id from the tsv file
@@ -92,9 +110,10 @@ class Neo4jConnection(DBConnection):
         :param role_ids:
         :return:
         """
-        self._add_actor(actor_id, actor_name, born_year, death_year)
+        self.add_actor(actor_id, actor_name, born_year, death_year)
         for movie in role_ids:
-            self._add_movie_relation(actor_id, movie)
+            self.add_movie(movie)
+            self.add_movie_relation(actor_name, movie)
 
     def close(self):
         """

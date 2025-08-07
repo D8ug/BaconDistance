@@ -32,6 +32,18 @@ services:
         VITE_API_URL: "http://localhost:5000"
     ports:
         - "80:80"
+  rabbitmq:
+    build: rabbitmq:4-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  rabbitmq_receiver:
+    build: ./backend
+    command: python rabbitmq_message_receiver.py
+    depends_on:
+      - neo4j
+      - rabbitmq
+    restart: "on-failure"
 
 volumes:
   db_data:
