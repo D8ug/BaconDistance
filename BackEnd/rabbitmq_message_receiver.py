@@ -4,7 +4,7 @@ import sys
 
 import pika
 
-from BackEnd.DB.neo4j_connection import Neo4jConnection
+from DB.neo4j_connection import Neo4jConnection
 
 neo4j_db = Neo4jConnection()
 
@@ -13,7 +13,7 @@ def connect_to_rabbit_mq() -> pika.connection:
     connect to rabbitmq server
     :return: pika connection
     """
-    return pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    return pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
 
 def callback(ch, method, properties, body):
     print(f" [x] Received {body}")

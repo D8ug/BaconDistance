@@ -36,7 +36,7 @@ SET a.death_year = "{death_year}"
 OPTIONAL MATCH (a:Actor {{name: "{actor_name}"}})
 WITH a
 WHERE a IS NULL
-CREATE (a:Actor {{name: "{actor_name}", id: "{actor_name}"}})
+CREATE (c:Actor {{name: "{actor_name}", id: "{actor_name}"}})
 """
     ADD_MOVIE_FORMAT = """
 MERGE (a:Movie {{id: "{movie_id}"}})
