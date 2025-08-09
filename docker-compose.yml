@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=none
+      - NEO4J_PLUGINS=["graph-data-science"]
+  resolve_database:
+    build: ./backend
+    command: python main.py
+    depends_on:
+      - neo4j
+    restart: "on-failure"
+
+  backend:
+    build: ./backend
+    command: python app.py
+    depends_on:
+      - neo4j
+      - resolve_database
+    ports:
+      - "5000:5000"
+    restart: "on-failure"
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: "http://localhost:5000"
+    ports:
+        - "80:80"
+  rabbitmq:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: "always"
+    environment:
+      - RABBITMQ_DISK_FREE_LIMIT=2GB
+  rabbitmq_receiver:
+    build: ./backend
+    command: python -u rabbitmq_message_receiver.py
+    depends_on:
+      - neo4j
+      - rabbitmq
+    restart: "on-failure"
+
+volumes:
+  db_data:
