@@ -42,7 +42,7 @@ services:
       - RABBITMQ_DISK_FREE_LIMIT=2GB
   rabbitmq_receiver:
     build: ./backend
-    command: python rabbitmq_message_receiver.py
+    command: python -u rabbitmq_message_receiver.py
     depends_on:
       - neo4j
       - rabbitmq
