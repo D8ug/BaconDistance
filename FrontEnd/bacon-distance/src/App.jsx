@@ -17,10 +17,15 @@ function App() {
         fetch(`${API_URL}/api/get_bacon_distance?actor=${encodeURIComponent(query)}`)
             .then(response => response.json())
             .then(data => {
+                if (data.result == "Infinity") {
+                    data.result = Infingity;
+                }
                 setBaconDistance(data.result);
             })
-            .catch(err => console.error(err));
-
+            .catch(err => {
+                setBaconDistance(Infinity);
+                console.error(err);
+            })
     }
 
   return (

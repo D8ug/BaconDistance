@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-DEFAULT_DB_URI = "neo4j://127.0.0.1:7687"
+DEFAULT_DB_URI = "bolt://neo4j:7687"
 DEFAULT_DB_USERNAME = "neo4j"
 IMDB_TSV_FILE_NAME = r"./DB/name.basics.tsv"
 
