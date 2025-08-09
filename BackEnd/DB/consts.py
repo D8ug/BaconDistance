@@ -1,9 +1,8 @@
 from enum import Enum
 
 
-DB_URI = "neo4j://127.0.0.1:7687"
-DB_USERNAME = "neo4j"
-DB_PASSWORD_PATH = r"C:\password.txt" #TODO: Find a better way to do this, for now i dont want this to be in the repo
+DEFAULT_DB_URI = "neo4j://127.0.0.1:7687"
+DEFAULT_DB_USERNAME = "neo4j"
 IMDB_TSV_FILE_NAME = r"./DB/name.basics.tsv"
 
 class Neo4jQuery(Enum):

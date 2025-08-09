@@ -4,15 +4,15 @@ from typing import List
 from neo4j import GraphDatabase
 from neo4j.exceptions import ClientError
 
-from DB.consts import Neo4jQuery
+from DB.consts import Neo4jQuery, DEFAULT_DB_USERNAME, DEFAULT_DB_URI
 from DB.db_connection import DBConnection
 
 
 class Neo4jConnection(DBConnection):
     def __init__(self):
         self.connection = GraphDatabase()
-        self.uri = os.getenv("NEO4J_URI", "bolt://neo4j:7687")
-        self.username = os.getenv("NEO4J_USER", "neo4j")
+        self.uri = os.getenv("NEO4J_URI", DEFAULT_DB_URI)
+        self.username = os.getenv("NEO4J_USER", DEFAULT_DB_USERNAME)
         self.password = os.getenv("NEO4J_PASSWORD", "")
         self.driver = None
         self.session = None
