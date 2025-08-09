@@ -7,11 +7,7 @@ def milestone_0(neo4j_db):
     generate_db.generate_db_from_tsv(IMDB_TSV_FILE_NAME, neo4j_db)
 
 def milestone_1(neo4j_db):
-    bd = bacon_distance.bacon_distance(neo4j_db, "Tom Hanks")
-    print(bd)
-    bd = bacon_distance.bacon_distance(neo4j_db, "Tom Hanks")
-    print(bd)
-    bd = bacon_distance.bacon_distance(neo4j_db, "Tom Hanks")
+    bd = bacon_distance.bacon_distance(neo4j_db, "Kirk Douglas")
     print(bd)
 
 

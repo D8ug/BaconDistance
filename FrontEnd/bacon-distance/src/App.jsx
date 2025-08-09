@@ -39,7 +39,7 @@ function App() {
       <div>
           <input
               type="text"
-              placeholder="Tom Hanks"
+              placeholder="Kirk Douglas"
               value={query}
               onChange={handleActorSearchChange}
           />
